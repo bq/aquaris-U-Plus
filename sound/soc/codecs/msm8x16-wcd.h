@@ -307,6 +307,7 @@ struct msm8x16_wcd_priv {
 	bool ear_pa_boost_set;
 	bool ext_spk_boost_set;
 	bool dec_active[NUM_DECIMATORS];
+	u16 ext_spk_pa_mode;
 	struct on_demand_supply on_demand_list[ON_DEMAND_SUPPLIES_MAX];
 	struct regulator *spkdrv_reg;
 	/* mbhc module */

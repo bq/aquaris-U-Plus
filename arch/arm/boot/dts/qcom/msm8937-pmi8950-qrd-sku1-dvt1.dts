@@ -26,52 +26,31 @@
 / {
 	qrd_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "batterydata-qrd-sku1-4v4-2800mah.dtsi"
+		#include "2314401_CK_M3000A_3000mAh_averaged_MasterSlave_Feb16th2016_PMI8952GUI20015.dtsi"
 	};
 };
 
 &pmi8950_charger {
 	qcom,battery-data = <&qrd_batterydata>;
 	qcom,float-voltage-mv = <4400>;
-	qcom,chg-led-sw-controls;
-	qcom,chg-led-support;
+	qcom,dc-psy-type = "Mains";
+	qcom,dc-psy-ma = <1600>;
 	status = "okay";
+	qcom,override-usb-current;
 };
 
 &pmi8950_fg {
 	qcom,battery-data = <&qrd_batterydata>;
-	qcom,cold-bat-decidegc = <(-100)>;
-	qcom,cool-bat-decidegc = <(-100)>;
+	qcom,cold-bat-decidegc = <0>;
+	qcom,cool-bat-decidegc = <100>;
 	qcom,hot-bat-decidegc = <550>;
-	qcom,warm-bat-decidegc = <550>;
+	qcom,warm-bat-decidegc = <450>;
 	qcom,bad-battery-detection-enable;
 	qcom,hold-soc-while-full;
 };
 
-&soc {
-	sound {
-		qcom,model = "msm8952-sku1-snd-card";
-		qcom,msm-hs-micbias-type = "internal";
-		qcom,audio-routing =
-			"RX_BIAS", "MCLK",
-			"SPK_RX_BIAS", "MCLK",
-			"INT_LDO_H", "MCLK",
-			"MIC BIAS External", "Handset Mic",
-			"MIC BIAS Internal2", "Headset Mic",
-			"MIC BIAS External", "Secondary Mic",
-			"AMIC1", "MIC BIAS External",
-			"AMIC2", "MIC BIAS Internal2",
-			"AMIC3", "MIC BIAS External";
-	};
-
-	i2c@78b7000 {
-		synaptics@4b {
-			vdd-supply = <&pm8937_l6>;
-		};
-	};
-};
-
 &i2c_2 {
+	status = "disabled";
 	pericom-type-c@1d {
 		status="disabled";
 	};

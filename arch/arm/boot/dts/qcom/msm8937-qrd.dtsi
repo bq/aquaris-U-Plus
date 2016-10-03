@@ -38,19 +38,34 @@
 
 &int_codec {
 	status = "okay";
+
+	qcom,model = "msm8952-sku1-snd-card";
+	qcom,msm-hs-micbias-type = "internal";
 	qcom,msm-mbhc-hphl-swh = <1>;
+	qcom,msm-mbhc-gnd-swh = <1>;
+	qcom,msm-spk-ext-pa = <&tlmm 6 0>;
+	qcom,msm-micbias1-ext-cap;
+	qcom,msm-micbias2-ext-cap;
+
 	qcom,msm-gpios =
-		"pri_i2s";
+		"pri_i2s",
+		"ext_spk_gpio";
 	qcom,pinctrl-names =
 		"all_off",
-		"pri_i2s_act";
+		"pri_i2s_act",
+		"ext_spk_gpio_act",
+		"pri_i2s_ext_spk_gpio_act";
 	pinctrl-names =
 		"all_off",
-		"pri_i2s_act";
-	pinctrl-0 = <&cdc_pdm_lines_sus &cdc_pdm_lines_2_sus>;
-	pinctrl-1 = <&cdc_pdm_lines_act &cdc_pdm_lines_2_act>;
+		"pri_i2s_act",
+		"ext_spk_gpio_act",
+		"pri_i2s_ext_spk_gpio_act";
+	pinctrl-0 = <&cdc_pdm_lines_sus &cdc_pdm_lines_2_sus &ext_spk_pa_sus>;
+	pinctrl-1 = <&cdc_pdm_lines_act &cdc_pdm_lines_2_act &ext_spk_pa_sus>;
+	pinctrl-2 = <&cdc_pdm_lines_sus &cdc_pdm_lines_2_sus &ext_spk_pa_act>;
+	pinctrl-3 = <&cdc_pdm_lines_act &cdc_pdm_lines_2_act &ext_spk_pa_act>;
 	qcom,cdc-us-euro-gpios;
-	qcom,msm-hs-micbias-type = "internal";
+
 	qcom,audio-routing =
 		"RX_BIAS", "MCLK",
 		"SPK_RX_BIAS", "MCLK",
@@ -127,7 +142,7 @@
 		1 &intc 0 221 0
 		2 &tlmm 67 0>;
 	interrupt-names = "hc_irq", "pwr_irq", "status_irq";
-	cd-gpios = <&tlmm 67 0x1>;
+	cd-gpios = <&tlmm 67 0x0>;
 
 	qcom,clk-rates = <400000 20000000 25000000 50000000 100000000
 								200000000>;
@@ -137,6 +152,8 @@
 };
 
 &i2c_5 { /* BLSP2 QUP1 */
+	status = "disabled";
+
 	nq@28 {
 		compatible = "qcom,nq-nci";
 		reg = <0x28>;
@@ -153,6 +170,7 @@
 		pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
 		clocks = <&clock_gcc clk_bb_clk2_pin>;
 		clock-names = "ref_clk";
+		status = "disabled";
 	};
 };
 
