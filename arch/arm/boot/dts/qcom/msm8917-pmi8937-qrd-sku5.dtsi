@@ -24,7 +24,7 @@
 };
 
 &mdss_dsi0 {
-	qcom,dsi-pref-prim-pan = <&dsi_hx8394f_720p_video>;
+	qcom,dsi-pref-prim-pan = <&dsi_ili9881c_txd_720p_video>;
 	pinctrl-names = "mdss_default", "mdss_sleep";
 	pinctrl-0 = <&mdss_dsi_active>;
 	pinctrl-1 = <&mdss_dsi_suspend>;
@@ -32,9 +32,24 @@
 	qcom,platform-reset-gpio = <&tlmm 60 0>;
 };
 
-&dsi_hx8394f_720p_video {
-	qcom,esd-check-enabled;
+&dsi_ili9881c_txd_720p_flip_video {
 	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,esd-check-enabled;
+};
+
+&dsi_ili9881c_hlt_720p_flip_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,esd-check-enabled;
+};
+
+&dsi_ili9881c_txd_720p_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,esd-check-enabled;
+};
+
+&dsi_hx8394f_hlt_720p_video {
+	qcom,panel-supply-entries = <&dsi_panel_pwr_supply>;
+	qcom,esd-check-enabled;
 };
 
 &soc {
@@ -77,6 +92,138 @@
 			focaltech,ignore-id-check;
 			focaltech,resume-in-workqueue;
 		};
+		
+		mstar@26 {
+			compatible = "mstar,msg2xxx";
+			reg = <0x26>;
+			pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+			pinctrl-0 = <&ts_int_active &ts_reset_active>;
+			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+			pinctrl-2 = <&ts_release>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <65 0x2008>;
+			mstar,irq-gpio = <&tlmm 65 0x2008>;
+			mstar,reset-gpio = <&tlmm 64 0x00>;
+			vdd-supply = <&pm8917_l17>;
+			vcc_i2c-supply = <&pm8917_l6>;
+			mstar,name = "msg2xxx";
+			mstar,create-vkeys;
+			mstar,disp-maxx = <720>;
+			mstar,disp-maxy = <1280>;
+			mstar,panel-maxx = <720>;
+			mstar,panel-maxy = <1380>;
+			mstar,key-codes = <158 172 139>;
+			mstar,y-offset = <0>;
+		};
+
+		melfas_mip4@48 {
+			compatible = "melfas,mip4_ts";
+			reg = <0x48>;
+			pinctrl-names = "pmx_ts_active","pmx_ts_suspend","pmx_ts_release";
+			pinctrl-0 = <&ts_int_active &ts_reset_active>;
+			pinctrl-1 = <&ts_int_suspend &ts_reset_suspend>;
+			pinctrl-2 = <&ts_release>;
+			interrupt-parent = <&tlmm>;
+			interrupts = <13 0x2>;
+			vdd-supply = <&pm8917_l17>;
+			vcc_i2c-supply = <&pm8917_l6>;
+			mip4_ts,gpio_irq = <&tlmm 65 0x2008>;
+			mip4_ts,gpio_reset = <&tlmm 64 0x00>;
+			mip4_ts,max_x = <720>;
+			mip4_ts,max_y = <1280>;
+			melfas,adapter_id = "mip4_ts";
+			mip4_ts,create-vkeys;
+		};
+		fpc1020@5f {
+		    compatible = "fpc,fpc1020";
+			reg = <0x5f>;
+			input-device-name = "fpc1020";
+			interrupt-parent = <&tlmm>;
+			interrupts = <9 0x0>;
+			fpc,gpio_rst    = <&tlmm 59 0>;
+			fpc,gpio_irq    = <&tlmm 9 0>;
+			vcc_spi-supply  = <&pm8917_l6>;
+			vdd_ana-supply  = <&pm8917_l6>;
+			vdd_io-supply   = <&pm8917_l6>;
+			fpc,use_fpc2050 = <1>;
+			fpc,enable-on-boot;
+			/delete-property/ fpc,enable-wakeup;
+			/* EV_MSC, MSC_SCAN */
+			fpc,event-type = <4>;
+			fpc,event-code = <4>;
+			spi-max-frequency = <4800000>;
+			spi-qup-id = <1>;
+			clock-names = "iface_clk", "core_clk";
+			clocks = <&clock_gcc clk_gcc_blsp1_ahb_clk>,
+				<&clock_gcc clk_gcc_blsp1_qup3_i2c_apps_clk>;
+			pinctrl-names = "fpc1020_reset_reset",
+					"fpc1020_reset_active",
+					"fpc1020_irq_active";
+			pinctrl-0 = <&fpc_reset_reset>;
+			pinctrl-1 = <&fpc_reset_active>;
+			pinctrl-2 = <&fpc_irq_active>;
+		};
+	};
+
+	i2c@7af5000 {
+		status = "ok";
+		aw2013@45 {
+			compatible = "awinic,aw2013";
+			reg = <0x45>;
+			vdd-supply = <&pm8917_l10>;
+			vcc-supply = <&pm8917_l5>;
+
+			aw2013,red {
+				aw2013,name = "green";
+				aw2013,id = <0>;
+				aw2013,max-brightness = <255>;
+				aw2013,max-current = <1>;
+				aw2013,rise-time-ms = <2>;
+				aw2013,hold-time-ms = <1>;
+				aw2013,fall-time-ms = <2>;
+				aw2013,off-time-ms = <1>;
+			};
+
+			aw2013,green {
+				aw2013,name = "blue";
+				aw2013,id = <1>;
+				aw2013,max-brightness = <255>;
+				aw2013,max-current = <1>;
+				aw2013,rise-time-ms = <2>;
+				aw2013,hold-time-ms = <1>;
+				aw2013,fall-time-ms = <2>;
+				aw2013,off-time-ms = <1>;
+			};
+
+			aw2013,blue {
+				aw2013,name = "red";
+				aw2013,id = <2>;
+				aw2013,max-brightness = <255>;
+				aw2013,max-current = <1>;
+				aw2013,rise-time-ms = <2>;
+				aw2013,hold-time-ms = <1>;
+				aw2013,fall-time-ms = <2>;
+				aw2013,off-time-ms = <1>;
+			};
+		};
+
+		nq210@28 {
+		compatible = "qcom,nq210";
+		reg = <0x28>;
+		qcom,nq-irq = <&tlmm 17 0x00>;
+		qcom,nq-ven = <&tlmm 16 0x00>;
+		qcom,nq-firm = <&tlmm 130 0x00>;
+		qcom,nq-clkreq = <&pm8937_gpios 5 0x00>;
+		interrupt-parent = <&tlmm>;
+		qcom,clk-src = "BBCLK2";
+		interrupts = <17 0>;
+		interrupt-names = "nfc_irq";
+		pinctrl-names = "nfc_active", "nfc_suspend";
+		pinctrl-0 = <&nfc_int_active &nfc_disable_active>;
+		pinctrl-1 = <&nfc_int_suspend &nfc_disable_suspend>;
+		clocks = <&clock_gcc clk_bb_clk2_pin>;
+		clock-names = "ref_clk";
+		};
 	};
 
 	gen-vkeys {
@@ -98,7 +245,7 @@
 &spmi_bus {
 	qcom,pmi8937@2 {
 		qcom,leds@a100 {
-			status = "okay";
+			status = "disabled";
 			qcom,led_mpp_2 {
 				label = "mpp";
 				linux,name = "green";
@@ -139,29 +286,42 @@
 		qcom,torch-source = <&pmi8937_torch0>;
 		qcom,switch-source = <&pmi8937_switch>;
 	};
+	
+	hall2_ic {
+		compatible = "hall-switch";
+		interrupt-parent = <&tlmm>;
+		interrupts = <45 3>;
+		interrupt-names = "hall-int";
+		vddio-supply = <&pm8917_l10>;
+		linux,gpio-int = <&tlmm 45 3>;
+		linux,wakeup;
+		linux,min-uv = <2800000>;
+		linux,max-uv = <2850000>;
+	};
 };
 
 / {
 	qrd_batterydata: qcom,battery-data {
 		qcom,batt-id-range-pct = <15>;
-		#include "batterydata-qrd-sku2-4v35-2590mah.dtsi"
+		#include "2314401_CK_M3000A_3000mAh_averaged_MasterSlave_Feb16th2016_PMI8952GUI20015.dtsi"
 	};
 };
 
 &pmi8937_charger {
 	qcom,battery-data = <&qrd_batterydata>;
 	qcom,float-voltage-mv = <4350>;
-	qcom,chg-led-sw-controls;
-	qcom,chg-led-support;
+	qcom,dc-psy-type = "Mains";
+	qcom,dc-psy-ma = <1600>;
 	status = "okay";
+	qcom,override-usb-current;
 };
 
 &pmi8937_fg {
 	qcom,battery-data = <&qrd_batterydata>;
-	qcom,cold-bat-decidegc = <(-100)>;
-	qcom,cool-bat-decidegc = <(-100)>;
+	qcom,cold-bat-decidegc = <(0)>;
+	qcom,cool-bat-decidegc = <(100)>;
 	qcom,hot-bat-decidegc = <550>;
-	qcom,warm-bat-decidegc = <550>;
+	qcom,warm-bat-decidegc = <450>;
 	qcom,bad-battery-detection-enable;
 	qcom,hold-soc-while-full;
 };

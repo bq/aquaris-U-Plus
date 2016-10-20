@@ -303,6 +303,11 @@
  * The below compile option is used to enable ESD protection.
  * By default, this compile option is disabled.
  */
+ #define CONFIG_ENABLE_ESD_EXTRA_SAFEGAURD
+ // ------------------- #ifdef CONFIG_ENABLE_ESD_EXTRA_SAFEGAURD ------------------- //
+ #ifdef CONFIG_ENABLE_ESD_EXTRA_SAFEGAURD
+ #define ESD_EXTRA_SAFEGAURD_COUNTER     (5)
+ #endif
 //#define CONFIG_ENABLE_ESD_PROTECTION
 
 // ------------------- #ifdef CONFIG_ENABLE_ESD_PROTECTION ------------------- //

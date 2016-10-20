@@ -780,6 +780,35 @@
 			};
 		};
 
+		ext-spk-pa {
+			ext_spk_pa_act: lines_on {
+				mux {
+					pins = "gpio6";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio6";
+					drive-strength = <8>;
+					output-low;
+					bias-pull-down;
+				};
+			};
+
+			ext_spk_pa_sus: lines_off {
+				mux {
+					pins = "gpio6";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio6";
+					drive-strength = <2>;
+					bias-pull-down;
+				};
+			};
+		};
+
 		/* WSA VI sense */
 		wsa-vi {
 			wsa_vi_on: wsa_vi_on {
@@ -1107,7 +1136,46 @@
 				bias-disable;
 			};
 		};
-
+		fpc_reset {
+			fpc_reset_reset: reset {
+				mux {
+					pins = "gpio59";
+					function = "gpio";
+				};
+				config {
+					pins = "gpio59";
+					drive-strength = <2>;
+					bias-disable;
+					output-low;
+				};
+			};
+		fpc_reset_active: active {
+				mux {
+					pins = "gpio59";
+					function = "gpio";
+				};
+				config {
+					pins = "gpio59";
+					drive-strength = <2>;
+					bias-disable;
+					output-high;
+				};
+			};			
+		};
+		fpc_irq_int_active {
+			fpc_irq_active: fpc_irq_active {
+				mux {
+					pins = "gpio9";
+					function = "gpio";
+				};
+				config {
+					pins = "gpio9";
+					drive-strength = <2>;
+					bias-disable;
+					input-enable;
+				};
+			};
+		};
 		tlmm_gpio_key {
 			gpio_key_active: gpio_key_active {
 				mux {

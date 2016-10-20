@@ -267,7 +267,7 @@ static void aw2013_led_blink_set(struct aw2013_led *led, unsigned long blinking)
 	if (blinking > 0) {
 		aw2013_read(led, AW_REG_LED_ENABLE, &val);
 		aw2013_write(led, AW_REG_LED_ENABLE, 0);
-		msleep(1);
+		udelay(AW_LED_RESET_DELAY);
 		aw2013_write(led, AW_REG_LED_CONFIG_BASE + led->id,
 			(AW_LED_FADE_OFF_MASK | AW_LED_FADE_ON_MASK | led->pdata->max_current) &
 			~AW_LED_BREATHE_MODE_MASK);

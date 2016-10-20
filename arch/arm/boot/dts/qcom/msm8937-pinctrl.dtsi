@@ -1030,7 +1030,7 @@
 				config {
 					pins = "gpio6";
 					drive-strength = <8>;
-					output-low;
+					output-high;
 					bias-pull-down;
 				};
 			};

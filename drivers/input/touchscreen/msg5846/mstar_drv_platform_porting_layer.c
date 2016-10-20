@@ -1189,7 +1189,7 @@ void DrvPlatformLyrDisableFingerTouchReport(void)
     {
         if (_gInterruptFlag == 1)  
         {
-            disable_irq(_gIrq);
+            disable_irq_nosync(_gIrq);
 
             _gInterruptFlag = 0;
         }
@@ -1203,7 +1203,7 @@ void DrvPlatformLyrDisableFingerTouchReport(void)
         if (_gInterruptFlag == 1) 
         {
 #ifdef CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD
-            disable_irq(_gIrq);
+            disable_irq_nosync(_gIrq);
 #else
             mt_eint_mask(CUST_EINT_TOUCH_PANEL_NUM);
 #endif //CONFIG_PLATFORM_USE_ANDROID_SDK_6_UPWARD            

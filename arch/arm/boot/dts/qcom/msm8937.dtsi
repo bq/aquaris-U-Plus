@@ -94,7 +94,9 @@
 		smd6 = &smdtty_apps_riva_ant_data;
 		smd7 = &smdtty_data1;
 		smd8 = &smdtty_data4;
-		smd11 = &smdtty_data11;
+		// oem-start
+		//smd11 = &smdtty_data11;
+		// oem-end
 		smd21 = &smdtty_data21;
 		smd36 = &smdtty_loopback;
 		i2c2 = &i2c_2;
@@ -1385,10 +1387,13 @@
 			qcom,smdtty-port-name = "DATA4";
 		};
 
+		// oem-start
+		/*
 		smdtty_data11: qcom,smdtty-data11 {
 			qcom,smdtty-remote = "modem";
 			qcom,smdtty-port-name = "DATA11";
-		};
+		};*/
+		// oem-end
 
 		smdtty_data21: qcom,smdtty-data21 {
 			qcom,smdtty-remote = "modem";

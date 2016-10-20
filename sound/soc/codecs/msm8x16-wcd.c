@@ -4183,21 +4183,12 @@ void wcd_imped_config(struct snd_soc_codec *codec,
 		case CAJON:
 		case CAJON_2_0:
 		case DIANGU:
-			if (value >= 13) {
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
-					0x20, 0x20);
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
-					0x07, 0x07);
-			} else {
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
-					0x20, 0x00);
-				snd_soc_update_bits(codec,
-					MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
-					0x07, 0x04);
-			}
+			snd_soc_update_bits(codec,
+				MSM8X16_WCD_A_ANALOG_RX_EAR_CTL,
+				0x20, 0x00);
+			snd_soc_update_bits(codec,
+				MSM8X16_WCD_A_ANALOG_NCP_VCTRL,
+				0x07, 0x04);
 			break;
 		}
 	} else {

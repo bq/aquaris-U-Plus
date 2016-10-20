@@ -1930,12 +1930,6 @@ static void fg_handle_battery_insertion(struct fg_chip *chip)
 	schedule_delayed_work(&chip->update_sram_data, msecs_to_jiffies(0));
 }
 
-
-static int soc_to_setpoint(int soc)
-{
-	return DIV_ROUND_CLOSEST(soc * 255, 100);
-}
-
 static void batt_to_setpoint_adc(int vbatt_mv, u8 *data)
 {
 	int val;
@@ -2164,7 +2158,12 @@ static int get_prop_capacity(struct fg_chip *chip)
 		return MISSING_CAPACITY;
 
 	if (!chip->profile_loaded && !chip->use_otp_profile)
-		return DEFAULT_CAPACITY;
+		//return DEFAULT_CAPACITY;
+		{
+		msoc=get_monotonic_soc_raw(chip);
+		return DIV_ROUND_CLOSEST((msoc - 1) * (FULL_CAPACITY - 2),
+		FULL_SOC_RAW - 2) + 1;
+		}
 
 	if (chip->charge_full)
 		return FULL_CAPACITY;
@@ -2173,7 +2172,12 @@ static int get_prop_capacity(struct fg_chip *chip)
 		if (fg_debug_mask & FG_POWER_SUPPLY)
 			pr_info_ratelimited("capacity: %d, EMPTY\n",
 					EMPTY_CAPACITY);
-		return EMPTY_CAPACITY;
+		//return EMPTY_CAPACITY;
+		{
+		msoc=get_monotonic_soc_raw(chip);
+		return DIV_ROUND_CLOSEST((msoc - 1) * (FULL_CAPACITY - 2),
+		FULL_SOC_RAW - 2) + 1;
+		}
 	}
 
 	msoc = get_monotonic_soc_raw(chip);
@@ -7623,9 +7627,8 @@ static int fg_common_hw_init(struct fg_chip *chip)
 		}
 	}
 
-	rc = fg_mem_masked_write(chip, settings[FG_MEM_DELTA_SOC].address, 0xFF,
-			soc_to_setpoint(settings[FG_MEM_DELTA_SOC].value),
-			settings[FG_MEM_DELTA_SOC].offset);
+     rc = fg_mem_masked_write(chip, settings[FG_MEM_DELTA_SOC].address, 0xFF, 1,
+            settings[FG_MEM_DELTA_SOC].offset);
 	if (rc) {
 		pr_err("failed to write delta soc rc=%d\n", rc);
 		return rc;
