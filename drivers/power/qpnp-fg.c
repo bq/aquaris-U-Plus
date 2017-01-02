@@ -2158,26 +2158,16 @@ static int get_prop_capacity(struct fg_chip *chip)
 		return MISSING_CAPACITY;
 
 	if (!chip->profile_loaded && !chip->use_otp_profile)
-		//return DEFAULT_CAPACITY;
-		{
-		msoc=get_monotonic_soc_raw(chip);
-		return DIV_ROUND_CLOSEST((msoc - 1) * (FULL_CAPACITY - 2),
-		FULL_SOC_RAW - 2) + 1;
-		}
+		return DEFAULT_CAPACITY;
 
 	if (chip->charge_full)
 		return FULL_CAPACITY;
 
 	if (chip->soc_empty) {
 		if (fg_debug_mask & FG_POWER_SUPPLY)
-			pr_info_ratelimited("capacity: %d, EMPTY\n",
+			pr_err("capacity: %d, EMPTY\n",
 					EMPTY_CAPACITY);
-		//return EMPTY_CAPACITY;
-		{
-		msoc=get_monotonic_soc_raw(chip);
-		return DIV_ROUND_CLOSEST((msoc - 1) * (FULL_CAPACITY - 2),
-		FULL_SOC_RAW - 2) + 1;
-		}
+		return EMPTY_CAPACITY;
 	}
 
 	msoc = get_monotonic_soc_raw(chip);
