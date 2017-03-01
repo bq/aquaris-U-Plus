@@ -1150,6 +1150,17 @@ config TOUCHSCREEN_MSG5846_FOR_CHAOZU
 
 	  If unsure, say N.
 
+config TOUCHSCREEN_MSG5846_FOR_CHAOZULITE
+	bool "Chaozulite Device firmware support for MSG5846 Touchscreen"
+	depends on TOUCHSCREEN_MSG5846
+	default n
+	help
+	  Say Y here
+	  -Mstar touch driver is connected
+	  -Touch panel firmware for chaozulite
+
+	  If unsure, say N.
+
 source "drivers/input/touchscreen/melfas_mip4/Kconfig"
 
 endif

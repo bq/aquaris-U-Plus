@@ -118,6 +118,34 @@ cam_sensor_rear_default: cam_sensor_rear_default {
 	};
 };
 
+               cam_sensor_af_default: cam_sensor_af_default {
+                        /* RESET, STANDBY */
+                        mux {
+                                pins = "gpio7", "gpio8";
+                                function = "gpio";
+                        };
+
+                        config {
+                                pins = "gpio7","gpio8";
+                                bias-disable; /* No PULL */
+                                drive-strength = <2>; /* 2 MA */
+                        };
+                };
+
+                cam_sensor_af_sleep: cam_sensor_af_sleep {
+                        /* RESET, STANDBY */
+                        mux {
+                                pins = "gpio7","gpio8";
+                                function = "gpio";
+                        };
+
+                        config {
+                                pins = "gpio7","gpio8";
+                                bias-disable; /* No PULL */
+                                drive-strength = <2>; /* 2 MA */
+                        };
+                };
+
 cam_sensor_rear_sleep: cam_sensor_rear_sleep {
 	/* RESET, STANDBY */
 	mux {
