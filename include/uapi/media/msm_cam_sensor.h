@@ -432,13 +432,17 @@ struct msm_actuator_params_t {
 	uint8_t reg_tbl_size;
 	uint16_t data_size;
 	uint16_t init_setting_size;
+	uint16_t deinit_setting_size;
 	uint32_t i2c_addr;
 	enum i2c_freq_mode_t i2c_freq_mode;
 	enum msm_camera_i2c_reg_addr_type i2c_addr_type;
 	enum msm_camera_i2c_data_type i2c_data_type;
 	struct msm_actuator_reg_params_t *reg_tbl_params;
 	struct reg_settings_t *init_settings;
+	struct reg_settings_t *deinit_settings; 
 	struct park_lens_data_t park_lens;
+	uint16_t init_flag;
+
 };
 
 struct msm_actuator_set_info_t {
@@ -501,6 +505,7 @@ struct msm_actuator_set_position_t {
 struct msm_actuator_cfg_data {
 	int cfgtype;
 	uint8_t is_af_supported;
+	uint16_t powerdownflag ;
 	union {
 		struct msm_actuator_move_params_t move;
 		struct msm_actuator_set_info_t set_info;

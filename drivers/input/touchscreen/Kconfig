@@ -1128,4 +1128,39 @@ config TOUCHSCREEN_MAXIM_STI
 
 source "drivers/input/touchscreen/gt9xx/Kconfig"
 
+config TOUCHSCREEN_MSG5846
+       tristate "msg5846 touchscreens"
+       depends on I2C
+       help
+         Say Y here if you have a mstar touchscreen.
+
+         If unsure, say N.
+
+         To compile this driver as a module, choose M here: the
+         module will be called msg5846.
+
+config TOUCHSCREEN_MSG5846_FOR_CHAOZU
+	bool "Chaozu Deivice firmware support for MSG5846 Touchscreen"
+	depends on TOUCHSCREEN_MSG5846
+	default n
+	help
+	  Say Y here
+	  -Mstar touch driver is connected
+	  -Touch panel firmware for chaozu
+
+	  If unsure, say N.
+
+config TOUCHSCREEN_MSG5846_FOR_CHAOZULITE
+	bool "Chaozulite Device firmware support for MSG5846 Touchscreen"
+	depends on TOUCHSCREEN_MSG5846
+	default n
+	help
+	  Say Y here
+	  -Mstar touch driver is connected
+	  -Touch panel firmware for chaozulite
+
+	  If unsure, say N.
+
+source "drivers/input/touchscreen/melfas_mip4/Kconfig"
+
 endif

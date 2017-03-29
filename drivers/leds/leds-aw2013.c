@@ -21,6 +21,7 @@
 #include <linux/slab.h>
 #include <linux/regulator/consumer.h>
 #include <linux/leds-aw2013.h>
+#include <linux/delay.h>
 
 /* register address */
 #define AW_REG_RESET			0x00
@@ -62,6 +63,8 @@ struct aw2013_led {
 	int num_leds;
 	int id;
 	bool poweron;
+
+	int max_bright_stored;
 };
 
 static int aw2013_write(struct aw2013_led *led, u8 reg, u8 val)
@@ -261,14 +264,17 @@ static void aw2013_led_blink_set(struct aw2013_led *led, unsigned long blinking)
 		}
 	}
 
-	led->cdev.brightness = blinking ? led->cdev.max_brightness : 0;
+	led->cdev.brightness = blinking ? led->max_bright_stored : 0;
 
 	if (blinking > 0) {
+		aw2013_read(led, AW_REG_LED_ENABLE, &val);
+		aw2013_write(led, AW_REG_LED_ENABLE, 0);
+		udelay(AW_LED_RESET_DELAY);
+		aw2013_write(led, AW_REG_LED_CONFIG_BASE + led->id,
+			(AW_LED_FADE_OFF_MASK | AW_LED_FADE_ON_MASK | led->pdata->max_current) &
+			~AW_LED_BREATHE_MODE_MASK);
 		aw2013_write(led, AW_REG_GLOBAL_CONTROL,
 			AW_LED_MOUDLE_ENABLE_MASK);
-		aw2013_write(led, AW_REG_LED_CONFIG_BASE + led->id,
-			AW_LED_FADE_OFF_MASK | AW_LED_FADE_ON_MASK |
-			AW_LED_BREATHE_MODE_MASK | led->pdata->max_current);
 		aw2013_write(led, AW_REG_LED_BRIGHTNESS_BASE + led->id,
 			led->cdev.brightness);
 		aw2013_write(led, AW_REG_TIMESET0_BASE + led->id * 3,
@@ -277,7 +283,9 @@ static void aw2013_led_blink_set(struct aw2013_led *led, unsigned long blinking)
 		aw2013_write(led, AW_REG_TIMESET1_BASE + led->id * 3,
 			led->pdata->fall_time_ms << 4 |
 			led->pdata->off_time_ms);
-		aw2013_read(led, AW_REG_LED_ENABLE, &val);
+		aw2013_write(led, AW_REG_LED_CONFIG_BASE + led->id,
+			AW_LED_FADE_OFF_MASK | AW_LED_FADE_ON_MASK |
+			AW_LED_BREATHE_MODE_MASK | led->pdata->max_current);
 		aw2013_write(led, AW_REG_LED_ENABLE, val | (1 << led->id));
 	} else {
 		aw2013_read(led, AW_REG_LED_ENABLE, &val);
@@ -347,13 +355,16 @@ static ssize_t aw2013_led_time_store(struct device *dev,
 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
 	struct aw2013_led *led =
 			container_of(led_cdev, struct aw2013_led, cdev);
-	int rc, rise_time_ms, hold_time_ms, fall_time_ms, off_time_ms;
+	int rc, rise_time_ms, hold_time_ms, fall_time_ms, off_time_ms, brightness_value;
 
-	rc = sscanf(buf, "%d %d %d %d",
+	rc = sscanf(buf, "%d %d %d %d %d",
 			&rise_time_ms, &hold_time_ms,
-			&fall_time_ms, &off_time_ms);
+			&fall_time_ms, &off_time_ms, &brightness_value);
 
 	mutex_lock(&led->pdata->led->lock);
+
+	led->max_bright_stored = brightness_value;
+
 	led->pdata->rise_time_ms = (rise_time_ms > MAX_RISE_TIME_MS) ?
 				MAX_RISE_TIME_MS : rise_time_ms;
 	led->pdata->hold_time_ms = (hold_time_ms > MAX_HOLD_TIME_MS) ?
@@ -385,7 +396,7 @@ static int aw_2013_check_chipid(struct aw2013_led *led)
 	u8 val;
 
 	aw2013_write(led, AW_REG_RESET, AW_LED_RESET_MASK);
-	usleep(AW_LED_RESET_DELAY);
+	udelay(AW_LED_RESET_DELAY);
 	aw2013_read(led, AW_REG_RESET, &val);
 	if (val == AW2013_CHIPID)
 		return 0;
@@ -459,6 +470,8 @@ static int aw2013_led_parse_child_node(struct aw2013_led *led_array,
 				rc);
 			goto free_pdata;
 		}
+
+		led->max_bright_stored = led->cdev.max_brightness;
 
 		rc = of_property_read_u32(temp, "aw2013,max-current",
 			&led->pdata->max_current);

@@ -39,7 +39,7 @@ struct nqx_platform_data {
 };
 
 static struct of_device_id msm_match_table[] = {
-	{.compatible = "qcom,nq-nci"},
+	{.compatible = "qcom,nq210"},
 	{}
 };
 

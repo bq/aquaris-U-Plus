@@ -203,15 +203,15 @@
 			#size-cells = <1>;
 
 			qcom,iterm-ma = <100>;
-			qcom,float-voltage-mv = <4200>;
-			qcom,resume-delta-mv = <200>;
+			qcom,float-voltage-mv = <4400>;
+			qcom,charging-timeout-mins = <768>;
+			qcom,float-voltage-comp = <16>;
+			qcom,fastchg-current-comp = <900>;
+			qcom,resume-delta-mv = <50>;
 			qcom,chg-inhibit-fg;
 			qcom,rparasitic-uohm = <100000>;
+			qcom,thermal-mitigation = <1600 1000 500 300 0>;
 			qcom,bms-psy-name = "bms";
-			qcom,thermal-mitigation = <1500 700 600 0>;
-			qcom,parallel-usb-min-current-ma = <1400>;
-			qcom,parallel-usb-9v-min-current-ma = <900>;
-			qcom,parallel-allowed-lowering-ma = <500>;
 			qcom,pmic-revid = <&pmi8950_revid>;
 			qcom,force-aicl-rerun;
 			qcom,aicl-rerun-period-s = <180>;
@@ -324,9 +324,10 @@
 			qcom,fg-iterm-ma = <150>;
 			qcom,fg-chg-iterm-ma = <100>;
 			qcom,pmic-revid = <&pmi8950_revid>;
-			qcom,fg-cutoff-voltage-mv = <3500>;
+			qcom,fg-cutoff-voltage-mv = <3400>;
 			qcom,cycle-counter-en;
 			qcom,capacity-learning-on;
+			qcom,vbat-estimate-diff-mv = <50>;
 
 			qcom,fg-soc@4000 {
 			status = "okay";
@@ -527,7 +528,7 @@
 			qcom,dim-method = "linear";
 			qcom,hyb-thres = <625>;
 			qcom,sync-dly-us = <800>;
-			qcom,fs-curr-ua = <20000>;
+			qcom,fs-curr-ua = <23000>;
 			qcom,led-strings-list = [00 01];
 			qcom,en-ext-pfet-sc-pro;
 			qcom,cons-sync-write-delay-us = <1000>;
@@ -620,11 +621,11 @@
 					<0x3 0xc0 0x1>;
 			interrupt-names = "sc-irq", "play-irq";
 			vcc_pon-supply = <&pon_perph_reg>;
-			qcom,play-mode = "direct";
+			qcom,play-mode = "buffer";
 			qcom,wave-play-rate-us = <5263>;
 			qcom,actuator-type = "erm";
 			qcom,wave-shape = "square";
-			qcom,vmax-mv = <2000>;
+			qcom,vmax-mv = <3000>;
 			qcom,ilim-ma = <800>;
 			qcom,sc-deb-cycles = <8>;
 			qcom,int-pwm-freq-khz = <505>;

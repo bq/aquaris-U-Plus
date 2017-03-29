@@ -75,7 +75,7 @@
 				config {
 					pins = "gpio6", "gpio7";
 					drive-strength = <2>;
-					bias-disable;
+					bias-pull-down;
 				};
 			};
 		};
@@ -105,7 +105,7 @@
 				config {
 					pins = "gpio10", "gpio11";
 					drive-strength = <2>;
-					bias-disable;
+					bias-pull-down;
 				};
 			};
 		};
@@ -135,7 +135,7 @@
 				config {
 					pins = "gpio18", "gpio19";
 					drive-strength = <2>;
-					bias-disable;
+					bias-pull-down;
 				};
 			};
 		};
@@ -516,6 +516,52 @@
 					pins = "gpio91", "gpio127", "gpio128";
 					drive-strength = <2>;
 					bias-pull-up;
+				};
+			};
+		};
+
+		fpc_reset {
+			fpc_reset_reset: reset {
+				mux {
+					pins = "gpio59";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio59";
+					drive-strength = <2>;
+					bias-disable;
+					output-low;
+				};
+			};
+
+		fpc_reset_active: active {
+				mux {
+					pins = "gpio59";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio59";
+					drive-strength = <2>;
+					bias-disable;
+					output-high;
+				};
+			};
+		};
+
+		fpc_irq_int_active {
+			fpc_irq_active: fpc_irq_active {
+				mux {
+					pins = "gpio9";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio9";
+					drive-strength = <2>;
+					bias-disable;
+					input-enable;
 				};
 			};
 		};
@@ -974,6 +1020,35 @@
 
 				config {
 					pins = "gpio63";
+					drive-strength = <2>;
+					bias-pull-down;
+				};
+			};
+		};
+
+		ext-spk-pa {
+			ext_spk_pa_act: lines_on {
+				mux {
+					pins = "gpio6";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio6";
+					drive-strength = <8>;
+					output-high;
+					bias-pull-down;
+				};
+			};
+
+			ext_spk_pa_sus: lines_off {
+				mux {
+					pins = "gpio6";
+					function = "gpio";
+				};
+
+				config {
+					pins = "gpio6";
 					drive-strength = <2>;
 					bias-pull-down;
 				};

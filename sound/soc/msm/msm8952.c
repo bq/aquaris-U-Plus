@@ -93,9 +93,9 @@ static struct wcd_mbhc_config mbhc_cfg = {
 	.swap_gnd_mic = NULL,
 	.hs_ext_micbias = false,
 	.key_code[0] = KEY_MEDIA,
-	.key_code[1] = KEY_VOICECOMMAND,
-	.key_code[2] = KEY_VOLUMEUP,
-	.key_code[3] = KEY_VOLUMEDOWN,
+	.key_code[1] = KEY_VOLUMEUP,
+	.key_code[2] = KEY_VOLUMEDOWN,
+	.key_code[3] = 0,
 	.key_code[4] = 0,
 	.key_code[5] = 0,
 	.key_code[6] = 0,
@@ -277,7 +277,7 @@ static int enable_spk_ext_pa(struct snd_soc_codec *codec, int enable)
 	if (enable) {
 		ret = msm_gpioset_activate(CLIENT_WCD_INT, "ext_spk_gpio");
 		if (ret) {
-			pr_err("%s: gpio set cannot be de-activated %s\n",
+			pr_err("%s: gpio set cannot be activated %s\n",
 					__func__, "ext_spk_gpio");
 			return ret;
 		}
@@ -1538,16 +1538,16 @@ static void *def_msm8952_wcd_mbhc_cal(void)
 	 * 210-290 == Button 2
 	 * 360-680 == Button 3
 	 */
-	btn_low[0] = 75;
-	btn_high[0] = 75;
-	btn_low[1] = 150;
-	btn_high[1] = 150;
-	btn_low[2] = 225;
-	btn_high[2] = 225;
-	btn_low[3] = 450;
-	btn_high[3] = 450;
-	btn_low[4] = 500;
-	btn_high[4] = 500;
+	btn_low[0] = 90;
+	btn_high[0] = 90;
+	btn_low[1] = 240;
+	btn_high[1] = 240;
+	btn_low[2] = 500;
+	btn_high[2] = 500;
+	btn_low[3] = 510;
+	btn_high[3] = 510;
+	btn_low[4] = 520;
+	btn_high[4] = 520;
 
 	return msm8952_wcd_cal;
 }

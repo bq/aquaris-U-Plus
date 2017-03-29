@@ -634,6 +634,32 @@ static void msm_sensor_fill_sensor_info(struct msm_sensor_ctrl_t *s_ctrl,
 }
 
 /* static function definition */
+
+static struct class *camera_class = NULL;
+char *main_camera_info = NULL;
+char *sub_camera_info = NULL;
+
+static ssize_t main_camera_info_show(struct class *class,
+				     struct class_attribute *attr, char *buf)
+{
+    if (main_camera_info != NULL)
+        return snprintf(buf, 32, "%s\n", main_camera_info);
+    else
+        return snprintf(buf, 12, "unknown\n");
+}
+
+static ssize_t sub_camera_info_show(struct class *class,
+				     struct class_attribute *attr, char *buf)
+{
+    if (sub_camera_info != NULL)
+        return snprintf(buf, 32, "%s\n", sub_camera_info);
+    else
+        return snprintf(buf, 12, "unknown\n");
+}
+static CLASS_ATTR(main_camera_info, 0644, main_camera_info_show, NULL);
+static CLASS_ATTR(sub_camera_info, 0644, sub_camera_info_show, NULL);
+
+
 int32_t msm_sensor_driver_probe(void *setting,
 	struct msm_sensor_info_t *probed_info, char *entity_name)
 {
@@ -901,7 +927,14 @@ CSID_TG:
 	 * probed on this slot
 	 */
 	s_ctrl->is_probe_succeed = 1;
-
+	if (slave_info->camera_id == 0)
+	{
+		main_camera_info = slave_info->sensor_name;
+	}
+	if (slave_info->camera_id == 2)
+	{
+		sub_camera_info = slave_info->sensor_name;
+	}
 	/*
 	 * Update the subdevice id of flash-src based on availability in kernel.
 	 */
@@ -1107,7 +1140,6 @@ static int32_t msm_sensor_driver_parse(struct msm_sensor_ctrl_t *s_ctrl)
 	if (!s_ctrl->msm_sensor_mutex) {
 		pr_err("failed: no memory msm_sensor_mutex %pK",
 			s_ctrl->msm_sensor_mutex);
-		rc = -ENOMEM;
 		goto FREE_SENSOR_I2C_CLIENT;
 	}
 
@@ -1289,6 +1321,11 @@ static int __init msm_sensor_driver_init(void)
 {
 	int32_t rc = 0;
 
+	camera_class = class_create(THIS_MODULE, "camera");
+	if (IS_ERR(camera_class))
+		return PTR_ERR(camera_class);
+	rc = class_create_file(camera_class, &class_attr_main_camera_info);
+	rc = class_create_file(camera_class, &class_attr_sub_camera_info);
 	CDBG("%s Enter\n", __func__);
 	rc = platform_driver_register(&msm_sensor_platform_driver);
 	if (rc)

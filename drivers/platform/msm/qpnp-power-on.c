@@ -1215,6 +1215,17 @@ qpnp_pon_config_input(struct qpnp_pon *pon,  struct qpnp_pon_config *cfg)
 	return 0;
 }
 
+static int charger_boot = 0;
+static int __init bootmode_setup(char *str)
+{
+	if (!strncmp(str, "charger", 7)) {
+		charger_boot = 1;
+	}
+	return 1;
+}
+
+__setup("androidboot.mode", bootmode_setup);
+
 static int qpnp_pon_config_init(struct qpnp_pon *pon)
 {
 	int rc = 0, i = 0, pmic_wd_bark_irq;
@@ -1485,6 +1496,9 @@ static int qpnp_pon_config_init(struct qpnp_pon *pon)
 		}
 		/* Register key configuration */
 		if (cfg->key_code) {
+            if (cfg->key_code == KEY_POWER && charger_boot ) {
+                cfg->s1_timer = 0;
+            }
 			rc = qpnp_pon_config_input(pon, cfg);
 			if (rc < 0)
 				return rc;

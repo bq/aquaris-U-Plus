@@ -52,7 +52,9 @@ struct smd_port_info smd_pi[SMD_N_PORTS] = {
 		.name = "DS",
 	},
 	{
-		.name = "UNUSED",
+		// oem-start
+		.name = "DATA11",
+		// oem-end
 	},
 };
 

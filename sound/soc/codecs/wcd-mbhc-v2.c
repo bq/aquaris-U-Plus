@@ -51,7 +51,7 @@
 #define FAKE_REM_RETRY_ATTEMPTS 3
 #define MAX_IMPED 60000
 
-#define WCD_MBHC_BTN_PRESS_COMPL_TIMEOUT_MS  50
+#define WCD_MBHC_BTN_PRESS_COMPL_TIMEOUT_MS  250
 #define ANC_DETECT_RETRY_CNT 7
 #define WCD_MBHC_SPL_HS_CNT  1
 
@@ -506,7 +506,7 @@ static void wcd_mbhc_set_and_turnoff_hph_padac(struct wcd_mbhc *mbhc)
 	} else {
 		pr_debug("%s PA is off\n", __func__);
 	}
-	WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_HPH_PA_EN, 0);
+	WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_HPH_PA_EN, 1);
 	usleep_range(wg_time * 1000, wg_time * 1000 + 50);
 }
 
@@ -931,7 +931,7 @@ static int wcd_check_cross_conn(struct wcd_mbhc *mbhc)
 	WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_ELECT_SCHMT_ISRC, reg1);
 	pr_debug("%s: leave, plug type: %d\n", __func__,  plug_type);
 
-	return (plug_type == MBHC_PLUG_TYPE_GND_MIC_SWAP) ? true : false;
+	return false;//(plug_type == MBHC_PLUG_TYPE_GND_MIC_SWAP) ? true : false;
 }
 
 static bool wcd_is_special_headset(struct wcd_mbhc *mbhc)
@@ -1169,6 +1169,8 @@ static void wcd_correct_swch_plug(struct work_struct *work)
 	wcd_enable_curr_micbias(mbhc, WCD_MBHC_EN_MB);
 
 
+	WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_FSM_EN, 0);
+	msleep(1);
 	/* Enable HW FSM */
 	WCD_MBHC_REG_UPDATE_BITS(WCD_MBHC_FSM_EN, 1);
 	/*

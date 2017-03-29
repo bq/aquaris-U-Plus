@@ -755,5 +755,13 @@ config INPUT_DRV2667_HAPTICS
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called drv260x-haptics.
+config FINGERPRINT_FPC1020
+	tristate "fpc fingerprint support"
+	depends on SPI
+	help
+	 Say Y here if you want to enable the FPC1020 acceleration sensor
+	 driver.
 
+	 To compile this driver as a module, choose M here: the
+	 module will be called fpc1020.	  
 endif
