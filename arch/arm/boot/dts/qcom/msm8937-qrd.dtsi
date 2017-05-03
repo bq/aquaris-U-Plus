@@ -13,7 +13,6 @@
 
 #include "msm8937-pinctrl.dtsi"
 #include "msm8937-camera-sensor-qrd.dtsi"
-#include "msm-pmi8950.dtsi"
 
 &soc {
 	gpio_keys {
@@ -188,8 +187,4 @@
 
 &pm8937_vadc {
 	/delete-node/ chan@11;
-};
-
-&usb_otg {
-qcom,usbin-vadc = <&pmi8950_vadc>;
 };

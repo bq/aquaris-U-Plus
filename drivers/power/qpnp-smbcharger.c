@@ -250,6 +250,7 @@ struct smbchg_chip {
 	struct smbchg_regulator		ext_otg_vreg;
 	struct work_struct		usb_set_online_work;
 	struct delayed_work		vfloat_adjust_work;
+	struct delayed_work		usb_state_work;
 	struct delayed_work		hvdcp_det_work;
 	spinlock_t			sec_access_lock;
 	struct mutex			therm_lvl_lock;
@@ -6135,6 +6136,21 @@ static int smbchg_battery_get_property(struct power_supply *psy,
 	return 0;
 }
 
+static void usb_state_check_work(struct work_struct *work)
+{
+	struct smbchg_chip *chip = container_of(work,
+				struct smbchg_chip,
+				usb_state_work.work);
+	pr_err("Check usb state during power on\n");
+        if(chip->usb_present != is_usb_present(chip)) {
+		chip->usb_present = is_usb_present(chip);
+                pr_err("force update usb status\n");
+                update_usb_status(chip, is_usb_present(chip), true);
+        }
+
+	return;
+}
+
 static char *smbchg_dc_supplicants[] = {
 	"bms",
 };
@@ -8281,6 +8297,7 @@ static int smbchg_probe(struct spmi_device *spmi)
 			smbchg_parallel_usb_en_work);
 	INIT_DELAYED_WORK(&chip->vfloat_adjust_work, smbchg_vfloat_adjust_work);
 	INIT_DELAYED_WORK(&chip->hvdcp_det_work, smbchg_hvdcp_det_work);
+	INIT_DELAYED_WORK(&chip->usb_state_work, usb_state_check_work);
 	init_completion(&chip->src_det_lowered);
 	init_completion(&chip->src_det_raised);
 	init_completion(&chip->usbin_uv_lowered);
@@ -8421,6 +8438,9 @@ static int smbchg_probe(struct spmi_device *spmi)
 	}
 
 	rerun_hvdcp_det_if_necessary(chip);
+
+	schedule_delayed_work(&chip->usb_state_work,
+				msecs_to_jiffies(10000));
 
 	dump_regs(chip);
 	create_debugfs_entries(chip);

@@ -988,8 +988,7 @@ static ssize_t show_chipinfo(struct device *dev,struct device_attribute *attr,ch
 {
 	ssize_t ret;
 
-	ret = sprintf(buf,"IC:melfas_%s,fw_ver:%02X%02X.%02X%02X.%02X%02X.%02X%02X\n",
-					CHIP_NAME,
+	ret = sprintf(buf,"IC:melfas_MMS438,fw_ver:%02X.%02X/%02X.%02X/%02X.%02X/%02X.%02X\n",
 					sys_fw_ver[0],sys_fw_ver[1],sys_fw_ver[2],
 					sys_fw_ver[3],sys_fw_ver[4],sys_fw_ver[5],
 					sys_fw_ver[6],sys_fw_ver[7]);
@@ -1338,7 +1337,7 @@ static int mip_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
 	disable_irq(client->irq);
 	info->irq = client->irq;
-	info->irq_flag = 0;
+
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	//Config early suspend
 	info->early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN +1;
@@ -1356,9 +1355,6 @@ static int mip_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	if (ret)
 		//dev_err(&client->dev, "Unable to register fb_notifier: %d\n",ret);
 #endif
-
-	//Enable device
-	mip_enable(info);
 
 #if MIP_USE_DEV
 	//Create dev node (optional)
@@ -1418,7 +1414,7 @@ static int mip_probe(struct i2c_client *client, const struct i2c_device_id *id)
 #endif
 
 	//power off device
-	//mip_power_off(info);
+	mip_power_off(info);
 
 	//dev_dbg(&client->dev, "%s [DONE]\n", __func__);	
 	dev_info(&client->dev, "MELFAS " CHIP_NAME " Touchscreen is initialized successfully.\n");
