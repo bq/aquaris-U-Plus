@@ -982,6 +982,7 @@ static int get_args(uint32_t kernel, struct smq_invoke_ctx *ctx)
 	/* calculate len requreed for copying */
 	for (oix = 0; oix < inbufs + outbufs; ++oix) {
 		int i = ctx->overps[oix]->raix;
+		uintptr_t mstart, mend;
 		ssize_t len = lpra[i].buf.len;
 		if (!len)
 			continue;
@@ -989,7 +990,15 @@ static int get_args(uint32_t kernel, struct smq_invoke_ctx *ctx)
 			continue;
 		if (ctx->overps[oix]->offset == 0)
 			copylen = ALIGN(copylen, BALIGN);
-		copylen += ctx->overps[oix]->mend - ctx->overps[oix]->mstart;
+		mstart = ctx->overps[oix]->mstart;
+		mend = ctx->overps[oix]->mend;
+		VERIFY(err, (mend - mstart) <= LONG_MAX);
+		if (err)
+			goto bail;
+		copylen += mend - mstart;
+		VERIFY(err, copylen >= 0);
+		if (err)
+			goto bail;
 	}
 	ctx->used = copylen;
 
@@ -1054,7 +1063,7 @@ static int get_args(uint32_t kernel, struct smq_invoke_ctx *ctx)
 	for (oix = 0; oix < inbufs + outbufs; ++oix) {
 		int i = ctx->overps[oix]->raix;
 		struct fastrpc_mmap *map = ctx->maps[i];
-		int mlen = ctx->overps[oix]->mend - ctx->overps[oix]->mstart;
+		ssize_t mlen;
 		uint64_t buf;
 		ssize_t len = lpra[i].buf.len;
 		if (!len)
@@ -1065,6 +1074,7 @@ static int get_args(uint32_t kernel, struct smq_invoke_ctx *ctx)
 			rlen -= ALIGN(args, BALIGN) - args;
 			args = ALIGN(args, BALIGN);
 		}
+		mlen = ctx->overps[oix]->mend - ctx->overps[oix]->mstart;
 		VERIFY(err, rlen >= mlen);
 		if (err)
 			goto bail;
@@ -1864,8 +1874,10 @@ static void file_free_work_handler(struct work_struct *w)
 			break;
 		}
 		mutex_unlock(&me->flfree_mutex);
-		if (freefl)
+		if (freefl) {
 			fastrpc_file_free(freefl->fl);
+			kfree(freefl);
+		}
 		mutex_lock(&me->flfree_mutex);
 
 		if (hlist_empty(&me->fls)) {
@@ -1875,7 +1887,6 @@ static void file_free_work_handler(struct work_struct *w)
 			break;
 		}
 		mutex_unlock(&me->flfree_mutex);
-		kfree(freefl);
 	}
 	return;
 }
