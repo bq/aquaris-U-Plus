@@ -3051,7 +3051,7 @@ static ssize_t lcd_info_show(struct class *class,
 	return 0;
 }
 
-static CLASS_ATTR(lcd_info, S_IRUSR, lcd_info_show, NULL);
+static CLASS_ATTR(lcd_info, 0644, lcd_info_show, NULL);
 
 static int create_lcd_info(struct platform_device *pdev, struct device_node *node)
 {

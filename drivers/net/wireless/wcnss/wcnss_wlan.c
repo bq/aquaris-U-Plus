@@ -506,7 +506,7 @@ static ssize_t wcnss_name_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE, "%s\n", WCNSS_MODULE_NAME);
 }
 
-static DEVICE_ATTR(wcnss_name, S_IRUSR,wcnss_name_show, NULL);
+static DEVICE_ATTR(wcnss_name, 0644,wcnss_name_show, NULL);
 
 static ssize_t wcnss_thermal_mitigation_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
