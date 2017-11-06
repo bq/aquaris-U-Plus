@@ -11314,7 +11314,7 @@ void DrvFwCtrlRestoreFirmwareModeToLogDataMode(void)
 void DrvFwCtrlCheckFirmwareUpdateBySwId(void)
 {
     DBG(&g_I2cClient->dev, "*** %s() ***\n", __func__);
-    printk("zhangjuntest--->>>g_ChipType == %d\n",g_ChipType);
+    printk("g_ChipType == %d\n",g_ChipType);
     if (g_ChipType == CHIP_TYPE_MSG21XXA)   
     {
 #ifdef CONFIG_ENABLE_CHIP_TYPE_MSG21XXA
@@ -11338,7 +11338,7 @@ void DrvFwCtrlCheckFirmwareUpdateBySwId(void)
 #ifdef CONFIG_ENABLE_CHIP_TYPE_MSG28XX
         _DrvFwCtrlMsg28xxCheckFirmwareUpdateBySwId();
 #endif //CONFIG_ENABLE_CHIP_TYPE_MSG28XX
-	printk("zhangjuntest--->>>g_ChipType == CHIP_TYPE_MSG28XX\n");
+	printk("g_ChipType == CHIP_TYPE_MSG28XX\n");
     }
     else
     {

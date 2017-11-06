@@ -4189,7 +4189,7 @@ static struct attribute_group smbchg_led_attr_group = {
 };
 
 
-//add by lifeng for close CHG_LED
+//add for close CHG_LED
 
 #if 1
 static int smbchg_close_chg_led(struct smbchg_chip *chip)
