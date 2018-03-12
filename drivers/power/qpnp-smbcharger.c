@@ -3771,6 +3771,7 @@ static void smbchg_external_power_changed(struct power_supply *psy)
 
 	read_usb_type(chip, &usb_type_name, &usb_supply_type);
 
+	current_limit = 500;
 	if (usb_supply_type != POWER_SUPPLY_TYPE_USB)
 		goto  skip_current_for_non_sdp;
 
@@ -6522,6 +6523,13 @@ static irqreturn_t usbin_ov_handler(int irq, void *_chip)
 					POWER_SUPPLY_HEALTH_OVERVOLTAGE, rc);
 		}
 	} else {
+		/* If OV condition is not detected anymore, restore health */
+		if (chip->usb_ov_det && chip->usb_psy) {
+			pr_smb(PR_MISC, "setting usb psy health GOOD\n");
+			rc = power_supply_set_health_state(chip->usb_psy,
+				POWER_SUPPLY_HEALTH_GOOD);
+		}
+
 		chip->usb_ov_det = false;
 		/* If USB is present, then handle the USB insertion */
 		usb_present = is_usb_present(chip);
