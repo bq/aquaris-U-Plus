@@ -942,11 +942,6 @@ CSID_TG:
 
 	pr_err("%s probe succeeded", slave_info->sensor_name);
 
-	/*
-	  Set probe succeeded flag to 1 so that no other camera shall
-	 * probed on this slot
-	 */
-	s_ctrl->is_probe_succeed = 1;
 	if (slave_info->camera_id == 0)
 	{
 		main_camera_info = slave_info->sensor_name;
